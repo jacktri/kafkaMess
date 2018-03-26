@@ -8,6 +8,8 @@ import org.apache.zookeeper.server.ServerConfig;
 import org.apache.zookeeper.server.ZooKeeperServerMain;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
 
+import kafka.security.auth.SimpleAclAuthorizer;
+
 public class ZooKeeperLocal {
 
     ZooKeeperServerMain zooKeeperServer;
