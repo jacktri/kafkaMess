@@ -25,7 +25,7 @@ repositories {
 
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter')
-	compile('org.springframework.kafka:spring-kafka')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+// https://mvnrepository.com/artifact/org.apache.kafka/kafka
+	compile group: 'org.apache.kafka', name: 'kafka_2.12', version: '1.0.1'
+
 }

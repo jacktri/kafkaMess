@@ -11,8 +11,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.ClassPathResource;
 
 import kafka.admin.AdminUtils;
+import kafka.admin.RackAwareMode;
 import kafka.log.LogConfig;
 import kafka.utils.ZKStringSerializer$;
+import kafka.utils.ZkUtils;
 
 public class EmbeddedKafka {
 
@@ -43,19 +45,22 @@ public class EmbeddedKafka {
                 connectionTimeoutMs,
                 ZKStringSerializer$.MODULE$);
 
+            ZkUtils zkUtils = ZkUtils.apply(zkClient, true);
+
+
             String topic = "ero";
             int partitions = 1;
             int replication = 1;
 
             // Add topic configuration her
             Properties props = new Properties();
-            Map<String, String> configs = new HashMap<>();
 
 
 //            props.setProperty(LogConfig.RetentionMsProp(), Long.toString(retentionMs));
 //            props.setProperty(LogConfig.CleanupPolicyProp(), DEFAULT_CLEANUP_POLICY);
 
-            AdminUtils.createTopic(zkClient, topic, partitions, replication, props);
+            AdminUtils.createTopic(zkUtils, topic, partitions, replication, props,new RackAwareMode.Disabled$());
+            zkUtils.close();
             zkClient.close();
         }
         catch (Exception e) {

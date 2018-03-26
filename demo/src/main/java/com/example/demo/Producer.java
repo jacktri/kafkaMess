@@ -1,25 +1,19 @@
 package com.example.demo;
 
+import static java.lang.Thread.sleep;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.stereotype.Component;
 
-@Component
 public class Producer {
-//
-//    @Autowired
-//    private KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendMessage(String msg) {
+    boolean running = true;
+    public void sendMessage(String msg) throws InterruptedException {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -30,16 +24,15 @@ public class Producer {
         configProps.put(
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
             StringSerializer.class);
-        ProducerFactory<String, String> producerFactory = new DefaultKafkaProducerFactory<>(configProps);
-        KafkaTemplate<String, String> template = new KafkaTemplate<>(producerFactory);
-        template.send("ero", "Z@@@@ZZ@Z@Z");
-//        template
+        try (KafkaProducer producer = new KafkaProducer<String, String>(configProps)) {
+            while(running) {
+                System.out.println("sending");
+                ProducerRecord<Long, String> record = new ProducerRecord<>("ero", "Hello Mom ");
+                producer.send(record);
+                System.out.println("sent");
+                sleep(5000);
+            }
+        }
     }
 
-    @PostConstruct
-    public void thisstuff() {
-        System.out.println("start");
-        sendMessage("heck");
-        System.out.println("sent");
-    }
 }
